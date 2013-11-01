@@ -8,15 +8,17 @@
 (defun connect-to-remote-call-server (host port &optional (remote-call-stream-sym '*remote-call-stream*))
  (set remote-call-stream-sym (get-remote-call-stream host port)))
 
-(defmacro def-call (name remote-function &key (remote-call-stream-sym '*remote-call-stream*)  &aux name-str)
-  ;(setf name "FUN1")
-  `(defun ,name (&rest args)
-     (let ((stream (socket-stream (symbol-value ',remote-call-stream-sym))))
-       (store (list ,remote-function args) stream)
-       (force-output stream)
-       (restore stream))))
+(defun remote-call (socket-stream remote-function args)
+  (let ((stream (socket-stream socket-stream)))
+    (store (list remote-function args) stream)
+    (force-output stream)
+    (restore stream)))
 
-;(connect-to-remote-call-server "127.0.0.1" 2000)
+(defmacro def-call (name remote-function &key (remote-call-stream-sym '*remote-call-stream*)  &aux name-str)
+  `(defun ,name (&rest args)
+     (remote-call (symbol-value ',remote-call-stream-sym) ,remote-function args)))
+
+;(remloc-call::connect-to-remote-call-server "127.0.0.1" 2000)
 
 ;(def-call fn1 "FUN1")
 ;(def-call fn2 "FUN2")

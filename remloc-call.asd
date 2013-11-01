@@ -3,5 +3,6 @@
   :depends-on (:cl-store :usocket :bordeaux-threads)
   :serial t
   :components ((:file "package")
+               (:file "remloc-call-share")
                (:file "remloc-call-server")
                (:file "remloc-call-client")))
