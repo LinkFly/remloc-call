@@ -8,15 +8,21 @@
 (defun connect-to-remote-call-server (host port &optional (remote-call-stream-sym '*remote-call-stream*))
  (set remote-call-stream-sym (get-remote-call-stream host port)))
 
-(defun remote-call (socket-stream remote-function args)
-  (let ((stream (socket-stream socket-stream)))
-    (store (list remote-function args) stream)
-    (force-output stream)
-    (restore stream)))
+(defun remote-local-call (socket-stream remote-function args)
+  (destructuring-bind (result call-status)
+      (let ((stream (socket-stream socket-stream)))
+        (store (list remote-function args) stream)
+        (force-output stream)
+        (restore stream))
+    (when call-status
+      (typecase call-status
+        (function-not-registered (error call-status)
+        (error "Remote local call: Unknown error"))))
+    result))
 
 (defmacro def-call (name remote-function &key (remote-call-stream-sym '*remote-call-stream*)  &aux name-str)
   `(defun ,name (&rest args)
-     (remote-call (symbol-value ',remote-call-stream-sym) ,remote-function args)))
+     (remote-local-call (symbol-value ',remote-call-stream-sym) ,remote-function args)))
 
 ;(remloc-call::connect-to-remote-call-server "127.0.0.1" 2000)
 

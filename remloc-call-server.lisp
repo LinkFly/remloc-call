@@ -22,8 +22,8 @@
 (defun handler (fn-name args &aux fn-sym)
   (setf fn-sym (gethash fn-name *reg-call*))
   (if fn-sym
-      (funcall fn-sym args)
-    (make-condition 'function-not-registered)))
+      (list (funcall fn-sym args) nil)
+    (list nil (make-condition 'function-not-registered))))
 
 (defun start-remote-call-server (host port)
   (make-thread 
