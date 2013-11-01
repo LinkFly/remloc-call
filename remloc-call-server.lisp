@@ -10,10 +10,10 @@
 (defun reg-call (name)
   (setf (gethash (as-string name) *reg-call*) name))
 
-(defun fun1 (&args) "Hi!!!")
-(defun fun2 (&args) "Hello world!!!")
-(defun fun3 (&args) "fun3!!!")
-(defun fun4 (&args) "fun444!!!")
+;(defun fun1 (&args) "Hi!!!")
+;(defun fun2 (&args) "Hello world!!!")
+;(defun fun3 (&args) "fun3!!!")
+;(defun fun4 (&args) "fun444!!!")
 ;(reg-call 'fun1)
 ;(reg-call 'fun2)
 ;(reg-call 'fun3)
@@ -24,7 +24,7 @@
   (when fn-sym
     (funcall fn-sym args)))
 
-(defun start-remote-call-server (host port &aux (seq (make-array 5 :element-type '(unsigned-byte 8))))
+(defun start-remote-call-server (host port)
   (make-thread 
    (lambda ()
      (loop :with socket = (usocket:socket-listen host port)
@@ -34,7 +34,9 @@
                    (restore stream)
                  (store (handler remote-function args) stream)
                  (force-output stream))))
-   :name (format nil "Remote call server (~A ~A)" host port)))
+   :name (format nil "Remote/Local call server (~A ~A)" host port)))
+
+;(start-remote-call-server "127.0.0.1" 2000)
 
  
 
