@@ -1,9 +1,3 @@
-;(ql:quickload :cl-store)
-;(ql:quickload :usocket)
-
-(defpackage :remote-call 
-  (:use :cl :usocket :cl-store))
-
 (in-package :remote-call)
 
 (defparameter *remote-call-stream* nil)

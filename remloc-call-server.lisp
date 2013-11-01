@@ -1,10 +1,3 @@
-;(ql:quickload :cl-store)
-;(ql:quickload :usocket)
-;(ql:quickload :bordeaux-threads)
-
-(defpackage :remote-call 
-  (:use :cl :usocket :cl-store :bordeaux-threads))
-
 (in-package :remote-call)
 
 (defparameter *reg-call* (make-hash-table :test 'equal))
