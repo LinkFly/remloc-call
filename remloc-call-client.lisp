@@ -1,4 +1,4 @@
-(in-package :remote-call)
+(in-package :remloc-call)
 
 (defparameter *remote-call-stream* nil)
 

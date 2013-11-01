@@ -1,4 +1,4 @@
-(in-package :remote-call)
+(in-package :remloc-call)
 
 (defparameter *reg-call* (make-hash-table :test 'equal))
 
@@ -36,7 +36,7 @@
                  (force-output stream))))
    :name (format nil "Remote/Local call server (~A ~A)" host port)))
 
-;(start-remote-call-server "127.0.0.1" 2000)
+;(remloc-call::start-remote-call-server "127.0.0.1" 2000)
 
  
 
