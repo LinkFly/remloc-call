@@ -1,10 +1,10 @@
 (in-package :remloc-call)
 
-(defparameter *reg-call* (make-hash-table :test 'equal))
-
-(defun reg-call (name &aux package-name)
-  (setf package-name (package-name (symbol-package name)))
-  (setf (gethash (list package-name (symbol-name name)) *reg-call*) name))
+(defun reg-call (fn-sym)
+  (setf (gethash (list (package-name (symbol-package fn-sym))
+                       (symbol-name fn-sym))
+                 *reg-call*)
+        fn-sym))
 
 ;(defun fun1 (&args) "Hi!!!")
 ;(defun fun2 (&args) "Hello world!!!")
