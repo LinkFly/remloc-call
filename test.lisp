@@ -1,4 +1,6 @@
-(defpackage :remloc-call.test (:use :cl :remloc-call :lift))
+(defpackage :remloc-call.test
+  (:use :cl :remloc-call :lift)
+  (:export #:run-remloc-call-tests))
 
 (in-package :remloc-call.test)
 (deftestsuite remloc-call.test () ())
@@ -11,9 +13,9 @@
 (defun fun2 (&rest args) (list "fun2" args))
 (defun fun3 (&rest args) (list "fun3" args))
 
-(defun run-tests (&key (test-port *test-port*) &aux sock)
+(defun remloc-call-tests (&key (test-port *test-port*))
   ;(setf test-port 2003)
-  (setf sock (second (start-remote-call-server "127.0.0.1" test-port)))
+  (start-remote-call-server "127.0.0.1" test-port)
   (unwind-protect
       (let ((*test-call-remote-stream* nil))
         (reg-call 'fun1)
@@ -41,5 +43,15 @@
     (stop-remote-call-server "127.0.0.1" test-port)))
 
 (addtest all-tests
-  (ensure (run-tests)))
+  (ensure (remloc-call-tests)))
 
+(defun run-remloc-call-tests (&aux res)
+  (run-tests :suite 'remloc-call.test)
+  (if (setf res (not (or (lift:failures lift:*test-result*)
+                         (lift:errors lift:*test-result*))))
+      (format t "~%TESTS PASSED~%")
+    (progn (format t "~%TESTS FAILED~%")
+      (error "TESTS FAILED")))
+  res)
+
+;(run-remloc-call-tests)
