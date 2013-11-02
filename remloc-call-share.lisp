@@ -2,6 +2,6 @@
 
 (defparameter *reg-call* (make-hash-table :test 'equal))
 
-(define-condition function-not-registered ()
+(define-condition function-not-registered (error)
   ())
 

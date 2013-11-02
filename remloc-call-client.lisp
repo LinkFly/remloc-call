@@ -1,10 +1,9 @@
 (in-package :remloc-call)
 
 (defparameter *local-call* nil)
-;(defparameter *local-call* t)
 (defparameter *check-registered* t)
-;(defparameter *check-registered* nil)
 
+;;;;;;;;;
 (defparameter *remote-call-stream* nil)
 
 (define-condition local-function-not-registered (function-not-registered)
@@ -41,15 +40,3 @@
 (defmacro def-call (name (package function) &key (remote-call-stream-sym '*remote-call-stream*))
   `(defun ,name (&rest args)
      (remote-call ',remote-call-stream-sym ,package ,function args)))
-
-;(remloc-call::connect-to-remote-call-server "127.0.0.1" 2000)
-;(defun fun2 (&args) "Hello world!!!")
-;(reg-call 'fun2)
-;(def-call fn1 ("REMLOC-CALL" "FUN1"))
-;(def-call fn2 ("REMLOC-CALL" "FUN2"))
-;(def-call fn3 "FUN3")
-;(def-call fn4 "FUN4")
-;(fn1 2)
-;(fn2 2)
-;(fn3 2)
-;(fn4 2)
