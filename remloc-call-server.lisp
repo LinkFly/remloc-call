@@ -2,13 +2,9 @@
 
 (defparameter *reg-call* (make-hash-table :test 'equal))
 
-(defun as-string (obj)
-  (typecase obj
-    (symbol (symbol-name obj))
-    (string obj)))
-
-(defun reg-call (name)
-  (setf (gethash (as-string name) *reg-call*) name))
+(defun reg-call (name &aux package-name)
+  (setf package-name (package-name (symbol-package name)))
+  (setf (gethash (list package-name (symbol-name name)) *reg-call*) name))
 
 ;(defun fun1 (&args) "Hi!!!")
 ;(defun fun2 (&args) "Hello world!!!")
@@ -19,8 +15,8 @@
 ;(reg-call 'fun3)
 ;(reg-call 'fun4)
 
-(defun handler (fn-name args &aux fn-sym)
-  (setf fn-sym (gethash fn-name *reg-call*))
+(defun handler (package-function args &aux fn-sym)
+  (setf fn-sym (gethash package-function *reg-call*))
   (if fn-sym
       (list (funcall fn-sym args) nil)
     (list nil (make-condition 'function-not-registered))))
@@ -31,9 +27,9 @@
      (loop :with socket = (usocket:socket-listen host port)
            :with stream = (socket-stream (socket-accept socket))
            :while t
-           :do (destructuring-bind (remote-function args)
+           :do (destructuring-bind (package-function args)
                    (restore stream)
-                 (store (handler remote-function args) stream)
+                 (store (handler package-function args) stream)
                  (force-output stream))))
    :name (format nil "Remote/Local call server (~A ~A)" host port)))
 
